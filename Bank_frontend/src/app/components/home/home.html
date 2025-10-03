@@ -1,0 +1,158 @@
+
+<div class="home-container">
+
+  <header class="hero-section">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">🏦 E-Bank</h1>
+        <p class="hero-subtitle">Your Trusted Banking Partner</p>
+        <p class="hero-description">
+          Experience the future of banking with our secure, reliable, and user-friendly platform.
+          Manage your finances with confidence and ease.
+        </p>
+      </div>
+      <div class="login-section">
+        <h2>Choose Your Login</h2>
+        <div class="login-buttons">
+          <button class="login-btn customer-login" (click)="navigateToCustomerLogin()">
+            <div class="btn-icon">👤</div>
+            <div class="btn-text">
+              <h3>Customer Login</h3>
+              <p>Access your personal banking</p>
+            </div>
+          </button>
+          
+          <button class="login-btn admin-login" (click)="navigateToAdminLogin()">
+            <div class="btn-icon">⚙️</div>
+            <div class="btn-text">
+              <h3>Admin Login</h3>
+              <p>Bank administration portal</p>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="info-section">
+    <div class="info-content">
+      <h2 class="section-title">Why Choose SecureBank?</h2>
+      
+      <div class="features-grid">
+        <div class="feature-card" *ngFor="let feature of bankFeatures">
+          <div class="feature-icon">{{ feature.icon }}</div>
+          <h3 class="feature-title">{{ feature.title }}</h3>
+          <p class="feature-description">{{ feature.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="services-section">
+    <div class="services-content">
+      <h2 class="section-title">Our Banking Services</h2>
+      
+      <div class="services-grid">
+        <div class="service-item">
+          <h3>💼 Personal Banking</h3>
+          <p>Complete personal banking solutions including savings, checking accounts, and personal loans.</p>
+        </div>
+        
+        <div class="service-item">
+          <h3>🏢 Business Banking</h3>
+          <p>Comprehensive business financial services to help your business grow and succeed.</p>
+        </div>
+        
+        <div class="service-item">
+          <h3>🏠 Home Loans</h3>
+          <p>Competitive mortgage rates and flexible terms to help you achieve your homeownership dreams.</p>
+        </div>
+        
+        <div class="service-item">
+          <h3>💳 Credit Cards</h3>
+          <p>Reward credit cards with competitive rates and exclusive benefits for our customers.</p>
+        </div>
+        
+        <div class="service-item">
+          <h3>📈 Investment Services</h3>
+          <p>Professional investment advice and portfolio management to secure your financial future.</p>
+        </div>
+        
+        <div class="service-item">
+          <h3>🛡️ Insurance</h3>
+          <p>Comprehensive insurance solutions to protect you, your family, and your assets.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-section">
+    <div class="about-content">
+      <h2 class="section-title">About SecureBank</h2>
+      
+      <div class="about-grid">
+        <div class="about-text">
+          <h3>Your Financial Partner</h3>
+          <p>
+            
+          </p>
+          
+          <div class="stats">
+            
+          </div>
+        </div>
+        
+        <div class="about-highlights">
+          <h4>Our Commitment is always to serve you better</h4>
+          <ul>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h3>🏦 SecureBank</h3>
+        <p>Building trust through secure and reliable banking services.</p>
+      </div>
+      
+      <div class="footer-links">
+        <div class="link-group">
+          <h4>Services</h4>
+          <ul>
+            <li>Personal Banking</li>
+            <li>Business Banking</li>
+            <li>Loans & Mortgages</li>
+            <li>Investment Services</li>
+          </ul>
+        </div>
+        
+        <div class="link-group">
+          <h4>Support</h4>
+          <ul>
+            <li>Contact Us</li>
+            <li>Help Center</li>
+            <li>Security Center</li>
+            <li>Privacy Policy</li>
+          </ul>
+        </div>
+        
+        <div class="link-group">
+          <h4>Contact</h4>
+          <ul>
+            <li>📞 1-800-SECURE</li>
+            <li>✉️ support@securebank.com</li>
+            <li>📍 123 Banking Street</li>
+            <li>🕒 Mon-Fri 9AM-5PM</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2024 SecureBank. All rights reserved. Member FDIC. Equal Housing Lender.</p>
+    </div>
+  </footer>
+</div>

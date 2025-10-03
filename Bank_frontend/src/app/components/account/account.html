@@ -1,0 +1,236 @@
+<div class="account-container">
+  <header class="account-header">
+    <div class="header-left">
+      <button class="back-btn" (click)="goBack()">← Back to Dashboard</button>
+      <button class="home-btn" (click)="goHome()">🏠 Home</button>
+    </div>
+    <h1>Account Management</h1>
+  </header>
+
+  <div class="account-content">
+    <div class="account-info-card">
+      <h2>Account Details</h2>
+      <div *ngIf="!accountLoading && account" class="account-details">
+        <div class="balance-display">
+          <span class="currency">₹</span>
+          <span class="amount">{{ account.balance | number:'1.2-2' }}</span>
+        </div>
+        <div class="account-meta">
+          <p><strong>Account Number:</strong> {{ account.accountNo }}</p>
+          <p><strong>Account Type:</strong> {{ account.account_type }}</p>
+        </div>
+      </div>
+      <div *ngIf="accountLoading" class="loading-text">Loading account details...</div>
+    </div>
+
+    <div class="tab-navigation">
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'transactions'"
+        (click)="setActiveTab('transactions')"
+      >
+        Transaction History
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'operations'"
+        (click)="setActiveTab('operations')"
+      >
+        Account Operations
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'services'"
+        (click)="setActiveTab('services')"
+      >
+        Additional Services
+      </button>
+    </div>
+
+
+    <div class="tab-content">
+      <div *ngIf="activeTab === 'transactions'" class="transactions-section">
+        <div class="section-header">
+          <h3>Recent Transactions</h3>
+          <button class="refresh-btn" (click)="loadTransactions()" [disabled]="transactionsLoading">
+            Refresh
+          </button>
+        </div>
+        
+        <div *ngIf="transactionsLoading" class="loading-text">Loading transactions...</div>
+        
+        <div *ngIf="!transactionsLoading && transactions.length === 0" class="no-data">
+          No transactions found.
+        </div>
+        
+        <div *ngIf="!transactionsLoading && transactions.length > 0" class="transactions-list">
+          <div *ngFor="let transaction of transactions" class="transaction-item" [class]="transaction.transaction_type.toLowerCase()">
+            <div class="transaction-icon">
+              <span *ngIf="transaction.transaction_type === 'Deposit'">💰</span>
+              <span *ngIf="transaction.transaction_type === 'Withdrawal'">🏧</span>
+            </div>
+            <div class="transaction-details">
+              <h4>{{ transaction.transaction_type }}</h4>
+              <p class="transaction-date">{{ formatDate(transaction.timestamp) }}</p>
+            </div>
+            <div class="transaction-amount" [class]="transaction.transaction_type.toLowerCase()">
+              <span *ngIf="transaction.transaction_type === 'Deposit'">+</span>
+              <span *ngIf="transaction.transaction_type === 'Withdrawal'">-</span>
+              ₹{{ transaction.amount | number:'1.2-2' }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="activeTab === 'operations'" class="operations-section">
+        <div class="operation-cards">
+          <div class="operation-card">
+            <h3>💰 Deposit Money</h3>
+            <form [formGroup]="depositForm" (ngSubmit)="onDeposit()">
+              <div class="form-group">
+                <label for="deposit-amount">Amount</label>
+                <input
+                  type="number"
+                  id="deposit-amount"
+                  formControlName="amount"
+                  class="form-control"
+                  [class.error]="depositForm.get('amount')?.invalid && depositForm.get('amount')?.touched"
+                  placeholder="Enter amount"
+                  min="1"
+                  step="0.01"
+                />
+                <span class="error-message" *ngIf="getFieldError(depositForm, 'amount')">
+                  {{ getFieldError(depositForm, 'amount') }}
+                </span>
+              </div>
+              <button type="submit" class="submit-btn deposit-btn" [disabled]="depositForm.invalid || loading">
+                <span *ngIf="!loading">Deposit</span>
+                <span *ngIf="loading">Processing...</span>
+              </button>
+            </form>
+          </div>
+          <div class="operation-card">
+            <h3>🏧 Withdraw Money</h3>
+            <form [formGroup]="withdrawForm" (ngSubmit)="onWithdraw()">
+              <div class="form-group">
+                <label for="withdraw-amount">Amount</label>
+                <input
+                  type="number"
+                  id="withdraw-amount"
+                  formControlName="amount"
+                  class="form-control"
+                  [class.error]="withdrawForm.get('amount')?.invalid && withdrawForm.get('amount')?.touched"
+                  placeholder="Enter amount"
+                  min="1"
+                  step="0.01"
+                />
+                <span class="error-message" *ngIf="getFieldError(withdrawForm, 'amount')">
+                  {{ getFieldError(withdrawForm, 'amount') }}
+                </span>
+              </div>
+              <button type="submit" class="submit-btn withdraw-btn" [disabled]="withdrawForm.invalid || loading">
+                <span *ngIf="!loading">Withdraw</span>
+                <span *ngIf="loading">Processing...</span>
+              </button>
+            </form>
+          </div>
+          <div class="operation-card" *ngIf="isAdmin">
+            <h3>⚖️ Update Balance</h3>
+            <form [formGroup]="updateBalanceForm" (ngSubmit)="onUpdateBalance()">
+              <div class="form-group">
+                <label for="new-balance">New Balance</label>
+                <input
+                  type="number"
+                  id="new-balance"
+                  formControlName="newBalance"
+                  class="form-control"
+                  [class.error]="updateBalanceForm.get('newBalance')?.invalid && updateBalanceForm.get('newBalance')?.touched"
+                  placeholder="Enter new balance"
+                  min="0"
+                  step="0.01"
+                />
+                <span class="error-message" *ngIf="getFieldError(updateBalanceForm, 'newBalance')">
+                  {{ getFieldError(updateBalanceForm, 'newBalance') }}
+                </span>
+              </div>
+              <button type="submit" class="submit-btn update-btn" [disabled]="updateBalanceForm.invalid || loading">
+                <span *ngIf="!loading">Update Balance</span>
+                <span *ngIf="loading">Updating...</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="activeTab === 'services'" class="services-section">
+        <div class="service-cards">
+          <div class="service-card">
+            <h3>📊 Calculate Interest</h3>
+            <form [formGroup]="interestForm" (ngSubmit)="onCalculateInterest()">
+              <div class="form-group">
+                <label for="interest-rate">Interest Rate (%)</label>
+                <input
+                  type="number"
+                  id="interest-rate"
+                  formControlName="rate"
+                  class="form-control"
+                  [class.error]="interestForm.get('rate')?.invalid && interestForm.get('rate')?.touched"
+                  placeholder="Enter interest rate"
+                  min="0.01"
+                  step="0.01"
+                />
+                <span class="error-message" *ngIf="getFieldError(interestForm, 'rate')">
+                  {{ getFieldError(interestForm, 'rate') }}
+                </span>
+              </div>
+              <div class="form-group">
+                <label for="years">Years</label>
+                <input
+                  type="number"
+                  id="years"
+                  formControlName="years"
+                  class="form-control"
+                  [class.error]="interestForm.get('years')?.invalid && interestForm.get('years')?.touched"
+                  placeholder="Enter number of years"
+                  min="1"
+                />
+                <span class="error-message" *ngIf="getFieldError(interestForm, 'years')">
+                  {{ getFieldError(interestForm, 'years') }}
+                </span>
+              </div>
+              <button type="submit" class="submit-btn calculate-btn" [disabled]="interestForm.invalid || loading">
+                <span *ngIf="!loading">Calculate Interest</span>
+                <span *ngIf="loading">Calculating...</span>
+              </button>
+            </form>
+          </div>
+          <div class="service-card" *ngIf="isAdmin">
+            <h3>📧 Send Notification</h3>
+            <form [formGroup]="notificationForm" (ngSubmit)="onSendNotification()">
+              <div class="form-group">
+                <label for="notification-message">Message</label>
+                <textarea
+                  id="notification-message"
+                  formControlName="message"
+                  class="form-control"
+                  [class.error]="notificationForm.get('message')?.invalid && notificationForm.get('message')?.touched"
+                  placeholder="Enter notification message"
+                  rows="4"
+                ></textarea>
+                <span class="error-message" *ngIf="getFieldError(notificationForm, 'message')">
+                  {{ getFieldError(notificationForm, 'message') }}
+                </span>
+              </div>
+              <button type="submit" class="submit-btn notify-btn" [disabled]="notificationForm.invalid || loading">
+                <span *ngIf="!loading">Send Notification</span>
+                <span *ngIf="loading">Sending...</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="message" class="message-alert" [class.success]="messageType === 'success'" [class.error]="messageType === 'error'">
+      {{ message }}
+    </div>
+  </div>
+</div>

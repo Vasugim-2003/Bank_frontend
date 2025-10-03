@@ -1,0 +1,109 @@
+<div class="customer-container">
+  <header class="customer-header">
+    <div class="header-left">
+      <button class="back-btn" (click)="goBack()">← Back to Dashboard</button>
+      <button class="home-btn" (click)="goHome()">🏠 Home</button>
+    </div>
+    <h1>Customer Services</h1>
+  </header>
+
+  <div class="customer-content">
+    <div class="balance-section">
+      <h2>Account Balance</h2>
+      <div class="balance-display" *ngIf="!balanceLoading">
+        <span class="currency">₹</span>
+        <span class="amount">{{ balance | number:'1.2-2' }}</span>
+      </div>
+      <div class="loading-text" *ngIf="balanceLoading">Loading balance...</div>
+      <button class="refresh-btn" (click)="loadBalance()" [disabled]="balanceLoading">
+        Refresh Balance
+      </button>
+    </div>
+    <div class="transaction-section">
+      <div class="transaction-cards">
+        <div class="transaction-card deposit-card">
+          <h3>💰 Deposit Money</h3>
+          <form [formGroup]="depositForm" (ngSubmit)="onDeposit()">
+            <div class="form-group">
+              <label for="deposit-amount">Amount to Deposit</label>
+              <input
+                type="number"
+                id="deposit-amount"
+                formControlName="amount"
+                class="form-control"
+                [class.error]="depositForm.get('amount')?.invalid && depositForm.get('amount')?.touched"
+                placeholder="Enter amount"
+                min="1"
+                step="0.01"
+              />
+              <span class="error-message" *ngIf="getFieldError(depositForm, 'amount')">
+                {{ getFieldError(depositForm, 'amount') }}
+              </span>
+            </div>
+            <button
+              type="submit"
+              class="submit-btn deposit-btn"
+              [disabled]="depositForm.invalid || loading"
+            >
+              <span *ngIf="!loading">Deposit</span>
+              <span *ngIf="loading">Processing...</span>
+            </button>
+          </form>
+        </div>
+        <div class="transaction-card withdraw-card">
+          <h3>🏧 Withdraw Money</h3>
+          <form [formGroup]="withdrawForm" (ngSubmit)="onWithdraw()">
+            <div class="form-group">
+              <label for="withdraw-amount">Amount to Withdraw</label>
+              <input
+                type="number"
+                id="withdraw-amount"
+                formControlName="amount"
+                class="form-control"
+                [class.error]="withdrawForm.get('amount')?.invalid && withdrawForm.get('amount')?.touched"
+                placeholder="Enter amount"
+                min="1"
+                step="0.01"
+              />
+              <span class="error-message" *ngIf="getFieldError(withdrawForm, 'amount')">
+                {{ getFieldError(withdrawForm, 'amount') }}
+              </span>
+            </div>
+            <button
+              type="submit"
+              class="submit-btn withdraw-btn"
+              [disabled]="withdrawForm.invalid || loading"
+            >
+              <span *ngIf="!loading">Withdraw</span>
+              <span *ngIf="loading">Processing...</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="message" class="message-alert" [class.success]="messageType === 'success'" [class.error]="messageType === 'error'">
+      {{ message }}
+    </div>
+    <div class="account-info-section">
+      <h3>Account Information</h3>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Account Number:</label>
+          <span>{{ currentUser?.accountNo }}</span>
+        </div>
+        <div class="info-item">
+          <label>Customer Name:</label>
+          <span>{{ currentUser?.name }}</span>
+        </div>
+        <div class="info-item">
+          <label>Email:</label>
+          <span>{{ currentUser?.email }}</span>
+        </div>
+        <div class="info-item">
+          <label>Phone:</label>
+          <span>{{ currentUser?.phone }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

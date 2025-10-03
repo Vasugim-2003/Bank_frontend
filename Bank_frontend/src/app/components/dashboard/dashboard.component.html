@@ -1,0 +1,73 @@
+<div class="dashboard-container">
+  <header class="dashboard-header">
+    <div class="header-content">
+      <h1>Bank Dashboard</h1>
+      <div class="user-info">
+        <span class="welcome-text">Welcome, {{ currentUser?.name }}</span>
+        <button class="home-btn" (click)="goHome()">🏠 Home</button>
+        <button class="logout-btn" (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="dashboard-content">
+      <div class="balance-card">
+        <h2>Account Balance</h2>
+        <div class="balance-amount" *ngIf="!loading">
+          <span class="currency">₹</span>
+          <span class="amount">{{ balance | number:'1.2-2' }}</span>
+        </div>
+        <div class="loading-spinner" *ngIf="loading">Loading...</div>
+        <p class="account-number">Account: {{ currentUser?.accountNo }}</p>
+      </div>
+
+      <div class="quick-actions">
+        <h3>Quick Actions</h3>
+        <div class="action-cards">
+          <div class="action-card" (click)="navigateToCustomer()">
+            <div class="action-icon customer-icon">👤</div>
+            <h4>Customer Services</h4>
+            <p>Deposit, Withdraw, Check Balance</p>
+          </div>
+          
+          <div class="action-card" (click)="navigateToAccount()">
+            <div class="action-icon account-icon">🏦</div>
+            <h4>Account Management</h4>
+            <p>Transactions, Interest, Notifications</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="account-info">
+        <h3>Account Information</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Customer ID:</label>
+            <span>{{ currentUser?.customerId }}</span>
+          </div>
+          <div class="info-item">
+            <label>Account Number:</label>
+            <span>{{ currentUser?.accountNo }}</span>
+          </div>
+          <div class="info-item">
+            <label>Name:</label>
+            <span>{{ currentUser?.name }}</span>
+          </div>
+          <div class="info-item">
+            <label>Email:</label>
+            <span>{{ currentUser?.email }}</span>
+          </div>
+          <div class="info-item">
+            <label>Phone:</label>
+            <span>{{ currentUser?.phone }}</span>
+          </div>
+          <div class="info-item">
+            <label>PAN:</label>
+            <span>{{ currentUser?.panNo }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

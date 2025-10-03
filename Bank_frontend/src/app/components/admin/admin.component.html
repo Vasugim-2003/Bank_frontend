@@ -1,0 +1,264 @@
+<div class="admin-container">
+
+  <header class="admin-header">
+    <div class="header-content">
+      <h1>🏦 Bank Admin Dashboard</h1>
+      <div class="header-actions">
+        <span class="admin-info">Welcome, Admin</span>
+        <button class="logout-btn" (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </header>
+  <div class="admin-content">
+    <div class="tab-navigation">
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'customers'"
+        (click)="activeTab = 'customers'"
+      >
+        👥 Customer Management
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'analytics'"
+        (click)="activeTab = 'analytics'"
+      >
+        📊 Analytics
+      </button>
+    </div>
+
+    <div *ngIf="activeTab === 'customers'" class="customers-section">
+      
+      <div class="controls-section">
+        <div class="search-section">
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="searchCustomers()"
+            placeholder="Search customers by name, email, customer ID, or account number..."
+            class="search-input"
+          />
+          <button class="search-btn" (click)="searchCustomers()">🔍 Search</button>
+        </div>
+        
+        <button class="add-btn" (click)="showAddCustomerForm()">
+          ➕ Add New Customer
+        </button>
+      </div>
+
+      <div *ngIf="showForm" class="form-section">
+        <div class="form-header">
+          <h3>{{ !isEditMode ? 'Add New Customer' : 'Edit Customer' }}</h3>
+          <button class="close-btn" (click)="cancelForm()">✖</button>
+        </div>
+
+        <form [formGroup]="customerForm" (ngSubmit)="onSubmit()" class="customer-form">
+          <div class="form-grid">
+            <div class="form-group" *ngIf="isEditMode">
+              <label for="customerId">Customer ID</label>
+              <input
+                type="text"
+                id="customerId"
+                formControlName="customerId"
+                class="form-control"
+                readonly
+              />
+            </div>
+
+            <div class="form-group" *ngIf="isEditMode">
+              <label for="accountNo">Account Number</label>
+              <input
+                type="text"
+                id="accountNo"
+                formControlName="accountNo"
+                class="form-control"
+                readonly
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="name">Full Name *</label>
+              <input
+                type="text"
+                id="name"
+                formControlName="name"
+                class="form-control"
+                [class.error]="customerForm.get('name')?.invalid && customerForm.get('name')?.touched"
+              />
+              <span class="error-message" *ngIf="getFieldError('name')">
+                {{ getFieldError('name') }}
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                class="form-control"
+                [class.error]="customerForm.get('email')?.invalid && customerForm.get('email')?.touched"
+              />
+              <span class="error-message" *ngIf="getFieldError('email')">
+                {{ getFieldError('email') }}
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number *</label>
+              <input
+                type="tel"
+                id="phone"
+                formControlName="phone"
+                class="form-control"
+                [class.error]="customerForm.get('phone')?.invalid && customerForm.get('phone')?.touched"
+              />
+              <span class="error-message" *ngIf="getFieldError('phone')">
+                {{ getFieldError('phone') }}
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label for="accountType">Account Type *</label>
+              <select
+                id="accountType"
+                formControlName="accountType"
+                class="form-control"
+                [class.error]="customerForm.get('accountType')?.invalid && customerForm.get('accountType')?.touched"
+              >
+                <option value="">Select Account Type</option>
+                <option value="Savings">Savings Account</option>
+                <option value="Current">Current Account</option>
+                <option value="Salary">Salary Account</option>
+                <option value="Fixed Deposit">Fixed Deposit Account</option>
+              </select>
+              <span class="error-message" *ngIf="getFieldError('accountType')">
+                {{ getFieldError('accountType') }}
+              </span>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="address">Address *</label>
+              <textarea
+                id="address"
+                formControlName="address"
+                class="form-control"
+                [class.error]="customerForm.get('address')?.invalid && customerForm.get('address')?.touched"
+                rows="3"
+              ></textarea>
+              <span class="error-message" *ngIf="getFieldError('address')">
+                {{ getFieldError('address') }}
+              </span>
+            </div>
+            <div class="form-group">
+              <label for="panNo">PAN Number *</label>
+              <input
+                type="text"
+                id="panNo"
+                formControlName="panNo"
+                class="form-control"
+                [class.error]="customerForm.get('panNo')?.invalid && customerForm.get('panNo')?.touched"
+                style="text-transform: uppercase"
+              />
+              <span class="error-message" *ngIf="getFieldError('panNo')">
+                {{ getFieldError('panNo') }}
+              </span>
+            </div>
+            <div class="form-group">
+              <label for="password">Password *</label>
+              <input
+                type="password"
+                id="password"
+                formControlName="password"
+                class="form-control"
+                [class.error]="customerForm.get('password')?.invalid && customerForm.get('password')?.touched"
+              />
+              <span class="error-message" *ngIf="getFieldError('password')">
+                {{ getFieldError('password') }}
+              </span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="cancel-btn" (click)="cancelForm()">Cancel</button>
+            <button type="submit" class="submit-btn" [disabled]="customerForm.invalid || isLoading" 
+                    (click)="debugFormState()">
+              {{ !isEditMode ? 'Add Customer' : 'Update Customer' }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="customers-list-section">
+        <div class="list-header">
+          <h3>All Customers ({{ filteredCustomers.length }})</h3>
+        </div>
+
+        <div *ngIf="isLoading" class="loading">Loading customers...</div>
+
+        <div *ngIf="!isLoading && filteredCustomers.length === 0" class="no-data">
+          No customers found.
+        </div>
+
+        <div *ngIf="!isLoading && filteredCustomers.length > 0" class="customers-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Customer ID</th>
+                <th>Account No</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Account Type</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let customer of filteredCustomers">
+                <td>{{ customer.customerId }}</td>
+                <td>{{ customer.accountNo }}</td>
+                <td>{{ customer.name }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.phone }}</td>
+                <td>{{ customer.accountType }}</td>
+                <td class="actions">
+                  <button class="edit-btn" (click)="editCustomer(customer)">✏️ Edit</button>
+                  <button class="delete-btn" (click)="deleteCustomer(customer)">🗑️ Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="activeTab === 'analytics'" class="analytics-section">
+      <h3>📊 Bank Analytics</h3>
+      <div class="analytics-grid">
+        <div class="stat-card">
+          <div class="stat-number">{{ customers.length }}</div>
+          <div class="stat-label">Total Customers</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-number">{{ getSavingsAccounts() }}</div>
+          <div class="stat-label">Savings Accounts</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-number">{{ getCurrentAccounts() }}</div>
+          <div class="stat-label">Current Accounts</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-number">{{ getTotalCustomers() }}</div>
+          <div class="stat-label">Salary Accounts</div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="message" class="message-alert" [class.success]="messageType === 'success'" [class.error]="messageType === 'error'">
+      {{ message }}
+    </div>
+  </div>
+</div>

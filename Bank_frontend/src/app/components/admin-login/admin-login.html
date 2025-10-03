@@ -1,0 +1,81 @@
+
+<div class="admin-login-container">
+  <div class="login-wrapper">
+    <div class="login-header">
+      <button class="back-btn" (click)="goBack()">
+        ← Back to Home
+      </button>
+      <h1>🏦 E-Bank</h1>
+      <p>Administrator Portal</p>
+    </div>
+
+
+    <div class="login-form-container">
+      <div class="admin-badge">
+        <span class="admin-icon">⚙️</span>
+        <h2>Admin Login</h2>
+        <p>Authorized personnel only</p>
+      </div>
+
+      <form [formGroup]="adminLoginForm" (ngSubmit)="onSubmit()" class="login-form">
+      
+        <div class="form-group">
+          <label for="username">Administrator Username</label>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="form-control"
+            [class.error]="username?.invalid && username?.touched"
+            placeholder="Enter admin username"
+            autocomplete="username"
+          />
+          <div class="error-message" *ngIf="username?.invalid && username?.touched">
+            <span *ngIf="username?.errors?.['required']">Username is required</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Administrator Password</label>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            class="form-control"
+            [class.error]="password?.invalid && password?.touched"
+            placeholder="Enter admin password"
+            autocomplete="current-password"
+          />
+          <div class="error-message" *ngIf="password?.invalid && password?.touched">
+            <span *ngIf="password?.errors?.['required']">Password is required</span>
+          </div>
+        </div>
+
+  
+        <div class="alert alert-error" *ngIf="errorMessage">
+          <span class="error-icon">⚠️</span>
+          {{ errorMessage }}
+        </div>
+
+
+        <button
+          type="submit"
+          class="login-btn"
+          [disabled]="adminLoginForm.invalid || isLoading"
+        >
+          <span *ngIf="!isLoading">🔐 Admin Login</span>
+          <span *ngIf="isLoading" class="loading-spinner">
+            <span class="spinner"></span>
+            Authenticating...
+          </span>
+        </button>
+      </form>
+
+      
+
+  <div class="background-elements">
+    <div class="bg-circle circle-1"></div>
+    <div class="bg-circle circle-2"></div>
+    <div class="bg-circle circle-3"></div>
+  </div>
+</div>
